@@ -5,7 +5,8 @@ from django.conf.urls.static import static
 from .import views
 
 urlpatterns=[
-path('',views.index)
+path('',views.index),
+re_path(r'^search/', views.search_results, name='search_results'),
 
 ]
 if settings.DEBUG:
