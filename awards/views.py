@@ -1,15 +1,34 @@
-from email import message
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 
+from django.shortcuts import render , redirect
+from .forms import UploadProjectForm
+from django.contrib.auth.decorators import login_required
 from awards.models import Project
 
 # CReate your views here
-# @login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login/')
 def index(request):
 
   project = Project.objects.all()
-  return render (request , 'awards/index.html',{"projects":project})
+  # note we use request.user.profile as the profile has a one to one relationship with the user
+  current_user = request.user.profile
+
+  # For the upload project model
+  if request.method == 'POST':
+    upload_project =UploadProjectForm(request.POST, request.FILES)
+
+    if upload_project.is_valid():
+      project = upload_project.save(commit=False)
+      project.user = current_user
+      project.save()
+
+    return redirect('index')
+
+  else:
+    upload_project = UploadProjectForm()
+
+   
+
+  return render (request , 'awards/index.html',{"projects":project , "form":upload_project})
 
 def search_results(request):
   if 'project' in request.GET and request.GET["project"]:
