@@ -7,7 +7,9 @@ from awards.models import Project
 # CReate your views here
 # @login_required(login_url='/accounts/login/')
 def index(request):
-  return render (request , 'awards/index.html')
+
+  project = Project.objects.all()
+  return render (request , 'awards/index.html',{"projects":project})
 
 def search_results(request):
   if 'project' in request.GET and request.GET["project"]:

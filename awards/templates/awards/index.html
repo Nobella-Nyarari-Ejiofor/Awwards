@@ -13,4 +13,12 @@
   </div>
 </form>
 <!-- end of form -->
+
+
+<!-- Displaying all projects -->
+{% if projects %}
+{% for project in projects %}
+  {{project.title}}
+{%endfor%}
+{% endif %}
 {%endblock%}
