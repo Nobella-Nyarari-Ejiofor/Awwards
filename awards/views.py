@@ -1,6 +1,7 @@
 
+from poplib import CR
 from django.shortcuts import render , redirect
-from .forms import UploadProjectForm
+from .forms import UploadProjectForm, CreateProfileForm
 from django.contrib.auth.decorators import login_required
 from awards.models import Project , Profile
 
@@ -50,5 +51,22 @@ def profile(request):
   current_user= request.user.profile
   user_profile= Profile.objects.filter(id=current_user.id)
   users_projects = Project.objects.filter(user_id = current_user.id).all()
+  user_in_session = request.user
 
-  return render(request , 'awards/profile.html', {"profile":user_profile,"projects":users_projects })
+  if request.method == 'POST':
+    create_profile =CreateProfileForm(request.POST, request.FILES)
+
+    if create_profile.is_valid():
+      profile = create_profile.save(commit=False)
+      profile.user = user_in_session
+      profile.update()
+
+    return redirect('profile')
+
+  else:
+    create_profile = CreateProfileForm()
+
+
+
+
+  return render(request , 'awards/profile.html', {"profile":user_profile,"projects":users_projects, "form":create_profile })

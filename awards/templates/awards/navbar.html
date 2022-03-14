@@ -27,8 +27,14 @@
       <li class="nav-item avatar dropdown">
         <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
+          {% if user.profile.photo %}
           <img height ="50px" src="{{user.profile.photo.url}}" class="rounded-circle z-depth-0"
             alt="avatar image">
+          {% else %}
+ 
+          <img height ="50px"  src="https://img.icons8.com/wired/64/ffffff/circled-user.png" class="rounded-circle z-depth-0"
+            alt="avatar image">
+          {% endif %}
         </a>
         <div class="dropdown-menu dropdown-menu-lg-right dropdown-secondary"
           aria-labelledby="navbarDropdownMenuLink-55">
