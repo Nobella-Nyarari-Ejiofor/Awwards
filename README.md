@@ -158,6 +158,6 @@ Github - [NOBELLA EJIOFOR](https://github.com/Nobella-Nyarari-Ejiofor)
 
 ## Live Link
 
-LiveLink- [Gh-pages](https://awardsarena.herokuapp.com/)
+LiveLink- [Gh-pages](https://trophytower.herokuapp.com/)
 
 [Go Back to the top](#awardsarena)
