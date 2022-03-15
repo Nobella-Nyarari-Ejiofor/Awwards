@@ -1,11 +1,13 @@
-
-from poplib import CR
+from django.contrib import messages
+from django.db import transaction
 from django.shortcuts import render , redirect
 from .forms import UploadProjectForm, CreateProfileForm
 from django.contrib.auth.decorators import login_required
 from awards.models import Project , Profile
 
+
 # CReate your views here
+
 @login_required(login_url='/accounts/login/')
 def index(request):
 
@@ -46,27 +48,29 @@ def search_results(request):
     message="You haven't searched for any term"
     return render (request,'awards/search.html',{"message":message})
 
+
+
+@transaction.atomic
 @login_required(login_url='/accounts/login')
 def profile(request):
   current_user= request.user.profile
   user_profile= Profile.objects.filter(id=current_user.id)
   users_projects = Project.objects.filter(user_id = current_user.id).all()
-  user_in_session = request.user
+  
 
   if request.method == 'POST':
-    create_profile =CreateProfileForm(request.POST, request.FILES)
+    create_profile =CreateProfileForm(request.POST,request.FILES, instance = request.user.profile)
 
     if create_profile.is_valid():
-      profile = create_profile.save(commit=False)
-      profile.user = user_in_session
-      profile.update()
+      user_profile = create_profile.save(commit=False)
+      user_profile.save()
+    
+      messages.success(request,('Your profile was successfully updated!'))
+      return redirect('profile')
 
-    return redirect('profile')
+    else:
+      messages.error(request,"please correct the error below")
 
   else:
-    create_profile = CreateProfileForm()
-
-
-
-
+     create_profile= CreateProfileForm(instance= request.user.profile)
   return render(request , 'awards/profile.html', {"profile":user_profile,"projects":users_projects, "form":create_profile })

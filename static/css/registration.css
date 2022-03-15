@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Gideon+Roman&family=Nunito&family=PT+Serif&family=Rowdies&family=Space+Grotesk&display=swap');
+
+*{
+  font-family: 'Gideon Roman', cursive;
+  font: 500;
+}
+#awards{
+  font-family: 'Rowdies', cursive;
+}
+#arena{
+  font-family: 'Gideon Roman', cursive;
+}

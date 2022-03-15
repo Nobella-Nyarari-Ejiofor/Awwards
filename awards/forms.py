@@ -10,4 +10,10 @@ class UploadProjectForm(forms.ModelForm):
 class CreateProfileForm(forms.ModelForm):
   class Meta:
     model=Profile
-    exclude = ['user']
+    exclude =['user']
+
+class RatingsForm(forms.ModelChoiceField):
+  class Meta:
+    model ="Ratings"
+    exclude = ['user','project']
+
