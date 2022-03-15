@@ -58,3 +58,5 @@ class Ratings(models.Model):
   usability = models.IntegerField(choices=list(zip(range(1,10), range(1,10))), unique=True)
   content = models.IntegerField(choices=list(zip(range(1,10), range(1,10))), unique=True)
   average=models.FloatField(validators= [MinValueValidator(0,0), MaxValueValidator(10,0)], default=0)
+
+
