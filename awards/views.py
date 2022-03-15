@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import render , redirect
-from .forms import UploadProjectForm, CreateProfileForm
+from .forms import UploadProjectForm, RatingsForm, CreateProfileForm
 from django.contrib.auth.decorators import login_required
-from awards.models import Project , Profile
-
+from awards.models import Project , Profile, Ratings
+from django.core.exceptions import PermissionDenied
 
 # CReate your views here
 
@@ -12,12 +12,14 @@ from awards.models import Project , Profile
 def index(request):
 
   project = Project.objects.all().order_by('-id')
+  
   current_user=request.user
   user_profile= Profile.objects.filter(id=current_user.id)
-  
+ 
+
+
   # note we use request.user.profile as the profile has a one to one relationship with the user
   current_user = request.user.profile
-
   # For the upload project model
   if request.method == 'POST':
     upload_project =UploadProjectForm(request.POST, request.FILES)
@@ -27,14 +29,14 @@ def index(request):
       project.user = current_user
       project.save()
 
+  
     return redirect('index')
 
   else:
     upload_project = UploadProjectForm()
+  
 
-   
-
-  return render (request , 'awards/index.html',{"projects":project , "form":upload_project , "profile":user_profile})
+  return render (request , 'awards/index.html',{"projects":project , "form":upload_project , "profile":user_profile })
 
 def search_results(request):
   if 'project' in request.GET and request.GET["project"]:
@@ -74,3 +76,25 @@ def profile(request):
   else:
      create_profile= CreateProfileForm(instance= request.user.profile)
   return render(request , 'awards/profile.html', {"profile":user_profile,"projects":users_projects, "form":create_profile })
+
+
+
+
+  #  # for the ratings form
+  # project_rated=Project.objects.filter().first(pk=id)
+  # ratings = Ratings.objects.filter(project = project_rated, user = current_user)
+
+  #   if ratings:
+  #     raise PermissionDenied("You have already rated this project")
+  #   else:
+  #     rate_form = RatingsForm(request.POST, request.FILES)
+  #     if rate_form.is_valid():
+  #       rating = rate_form.save(commit= False)
+  #       design = rate_form.cleaned_data['design']
+  #       content = rate_form.cleaned_data['content']
+  #       usability = rate_form.cleaned_data['usability']
+  #       rating.user = current_user
+  #       rating.project = project_rated
+  #       rating.average = (float(design)+ float(usability)+float(content))/3
+
+  #         rate_form = RatingsForm()
