@@ -80,13 +80,13 @@ def profile(request):
      create_profile= CreateProfileForm(instance= request.user.profile)
   return render(request , 'awards/profile.html', {"profile":user_profile,"projects":users_projects, "form":create_profile })
 
-class Profile(APIView):
+class ProfileList(APIView):
   def get(self, request , format=None):
     all_profile = Profile.objects.all()
     serializers = ProfileSerializer(all_profile , many =True)
     return Response(serializers.data)
 
-class Project(APIView):
+class ProjectList(APIView):
   def get(self, request, format = None):
     all_projects = Project.objects.all()
     serializers = ProjectSerializer(all_projects , many = True)
