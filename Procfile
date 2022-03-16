@@ -1,0 +1,1 @@
+web: gunicorn AwardsArena.wsgi --log-file -

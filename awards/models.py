@@ -36,7 +36,7 @@ class Project(models.Model):
   A model on the projects 
   """
   title= models.CharField(max_length=50)
-  image=models.ImageField(upload_to="project-images/")
+  image=models.ImageField(upload_to="project-images/", null =True)
   description =models.TextField(max_length= 500)
   link=models.CharField(max_length=200)
   user= models.ForeignKey(Profile, on_delete= models.CASCADE,related_name='projects', null=True)

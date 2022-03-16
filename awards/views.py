@@ -58,7 +58,7 @@ def search_results(request):
 @transaction.atomic
 @login_required(login_url='/accounts/login')
 def profile(request):
-  current_user= request.user.profile
+  current_user= request.user
   user_profile= Profile.objects.filter(id=current_user.id)
   users_projects = Project.objects.filter(user_id = current_user.id).all()
   
@@ -66,6 +66,7 @@ def profile(request):
   if request.method == 'POST':
     create_profile =CreateProfileForm(request.POST,request.FILES, instance = request.user.profile)
 
+    
     if create_profile.is_valid():
       user_profile = create_profile.save(commit=False)
       user_profile.save()
@@ -78,7 +79,25 @@ def profile(request):
 
   else:
      create_profile= CreateProfileForm(instance= request.user.profile)
-  return render(request , 'awards/profile.html', {"profile":user_profile,"projects":users_projects, "form":create_profile })
+
+  current_user = request.user.profile
+  # For the upload project model
+  if request.method == 'POST':
+    upload_project =UploadProjectForm(request.POST, request.FILES)
+
+    if upload_project.is_valid():
+      project = upload_project.save(commit=False)
+      project.user = request.user
+      project.save()
+
+  
+    return redirect('profile')
+
+  else:
+    upload_project = UploadProjectForm()
+  
+
+  return render(request , 'awards/profile.html', {"profile":user_profile,"projects":users_projects, "form":create_profile,"upload_form":upload_project })
 
 class ProfileList(APIView):
   def get(self, request , format=None):
@@ -92,22 +111,31 @@ class ProjectList(APIView):
     serializers = ProjectSerializer(all_projects , many = True)
     return Response(serializers.data)
 
+@login_required(login_url = '/accounts/login')
+def rating(self,request,id):
+  current_user = request.user
+  project_rated=Project.objects.filter(id = id).first()
+  ratings = Ratings.objects.filter(project = project_rated, user = current_user)
 
-  #  # for the ratings form
-  # project_rated=Project.objects.filter().first(pk=id)
-  # ratings = Ratings.objects.filter(project = project_rated, user = current_user)
 
-  #   if ratings:
-  #     raise PermissionDenied("You have already rated this project")
-  #   else:
-  #     rate_form = RatingsForm(request.POST, request.FILES)
-  #     if rate_form.is_valid():
-  #       rating = rate_form.save(commit= False)
-  #       design = rate_form.cleaned_data['design']
-  #       content = rate_form.cleaned_data['content']
-  #       usability = rate_form.cleaned_data['usability']
-  #       rating.user = current_user
-  #       rating.project = project_rated
-  #       rating.average = (float(design)+ float(usability)+float(content))/3
+  if request.method == 'POST':
 
-  #         rate_form = RatingsForm()
+     if ratings:
+       raise PermissionDenied("You have already rated this project")
+     else:
+      rate_form = RatingsForm(request.POST, request.FILES)
+      if rate_form.is_valid():
+        rating = rate_form.save(commit= False)
+        design = rate_form.cleaned_data['design']
+        content = rate_form.cleaned_data['content']
+        usability = rate_form.cleaned_data['usability']
+        rating.user = current_user
+        rating.project = project_rated
+        rating.average = (float(design)+ float(usability)+float(content))/3
+        rating.save()
+      return redirect("index")
+  else:
+
+    rate_form = RatingsForm()
+
+  return render (request,'awards/ratings.html',{"current_user": current_user ,"form":rate_form})

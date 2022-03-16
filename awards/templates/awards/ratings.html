@@ -1,0 +1,7 @@
+{% extends 'awards/base.html'%}
+{% load bootstrap %}
+{% block content %}
+<form action="{% url 'ratings'%}" method="POST">
+  {% bootstrap_form form%}
+</form>
+{% endblock %}
