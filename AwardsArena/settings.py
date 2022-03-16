@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'AwardsArena.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 MODE=config("MODE", default="dev")
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = 'Loveisblind'
 DATABASE_URL ='postgresql+psycopg2://moringa:access@localhost:5432/awarrdsarena'
 DEBUG = config('DEBUG', default=False)
 # development
